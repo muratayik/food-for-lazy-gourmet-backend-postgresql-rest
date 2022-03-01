@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { GetUserEmail } from 'src/get-user.decorator';
 import { Category } from './category.entity';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -9,7 +10,8 @@ export class CategoryController {
   constructor(private categoryService: CategoryService) {}
 
   @Get()
-  getCategories(): Promise<Category[]> {
+  getCategories(@GetUserEmail() email: string): Promise<Category[]> {
+    console.log(email);
     return this.categoryService.getCategories();
   }
 

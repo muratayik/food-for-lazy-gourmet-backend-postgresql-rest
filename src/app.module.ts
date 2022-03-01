@@ -1,5 +1,7 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthMiddleware } from './auth.middleware';
 import { CategoryModule } from './category/category.module';
 
 @Module({
@@ -15,8 +17,15 @@ import { CategoryModule } from './category/category.module';
       database: 'food-for-lazy-gourmet',
     }),
     CategoryModule,
+    HttpModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}
