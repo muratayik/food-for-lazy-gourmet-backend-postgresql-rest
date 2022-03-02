@@ -4,12 +4,16 @@ import {
   NestMiddleware,
   UnauthorizedException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Request, Response, NextFunction } from 'express';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    private readonly httpService: HttpService,
+    private configService: ConfigService,
+  ) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
     const bearerToken = req.headers.authorization;
@@ -19,12 +23,13 @@ export class AuthMiddleware implements NestMiddleware {
 
     const tokenWithourBearerText = bearerToken.replace('Bearer ', '');
 
-    const url = `https://food-for-lazy-gourmet-auth.herokuapp.com/auth/${tokenWithourBearerText}`;
+    const baseUrl = this.configService.get('AUTH_API_BASE_URL');
+
+    const url = `${baseUrl}/${tokenWithourBearerText}`;
 
     const { data } = await firstValueFrom(this.httpService.get(url));
 
-    const { email } = data;
-    res.locals.userEmail = email;
+    res.locals.user = data;
 
     next();
   }

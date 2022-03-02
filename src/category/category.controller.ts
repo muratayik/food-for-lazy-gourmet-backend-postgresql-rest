@@ -1,5 +1,14 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
-import { GetUserEmail } from 'src/get-user.decorator';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
+import { GetUser } from 'src/auth/get-user.decorator';
+import { User } from 'src/auth/user.model';
 import { Category } from './category.entity';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -10,8 +19,7 @@ export class CategoryController {
   constructor(private categoryService: CategoryService) {}
 
   @Get()
-  getCategories(@GetUserEmail() email: string): Promise<Category[]> {
-    console.log(email);
+  getCategories(): Promise<Category[]> {
     return this.categoryService.getCategories();
   }
 
@@ -32,5 +40,10 @@ export class CategoryController {
     @Body() updateCategoryDto: UpdateCategoryDto,
   ): Promise<Category> {
     return this.categoryService.updateCategory(updateCategoryDto);
+  }
+
+  @Delete('/:id')
+  deleteCategory(@Param('id') id: string): Promise<void> {
+    return this.categoryService.deleteCategory(id);
   }
 }

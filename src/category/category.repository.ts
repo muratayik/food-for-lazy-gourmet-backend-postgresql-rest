@@ -60,4 +60,11 @@ export class CategoryRepository extends Repository<Category> {
     await this.save(category);
     return category;
   }
+
+  async deleteCategory(id: string): Promise<void> {
+    const { affected } = await this.delete({ id });
+    if (!affected) {
+      throw new NotFoundException(`Category with ${id} not found`);
+    }
+  }
 }
