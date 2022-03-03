@@ -7,8 +7,6 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { GetUser } from 'src/auth/get-user.decorator';
-import { User } from 'src/auth/user.model';
 import { Category } from './category.entity';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
