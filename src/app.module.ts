@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configValidationSchema } from './config.schema';
 import { AdminCheckMiddleware } from './auth/admin-check.middleware';
 import { CategoryController } from './category/category.controller';
+import { IngredientModule } from './ingredient/ingredient.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { CategoryController } from './category/category.controller';
     }),
     CategoryModule,
     HttpModule,
+    IngredientModule,
   ],
   controllers: [],
   providers: [],
