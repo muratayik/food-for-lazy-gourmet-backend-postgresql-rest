@@ -36,7 +36,7 @@ export class MealRepository extends Repository<Meal> {
   }
 
   async createMeal(createMealDto: CreateMealDto): Promise<Meal> {
-    const { categoryId, name, imageUrl, videoUrl, instructions } =
+    const { categoryId, name, imageUrl, videoUrl, instructions, ingredients } =
       createMealDto;
 
     const meal = this.create({
@@ -45,6 +45,7 @@ export class MealRepository extends Repository<Meal> {
       imageUrl,
       videoUrl,
       instructions,
+      ingredients,
     });
 
     try {
@@ -70,10 +71,9 @@ export class MealRepository extends Repository<Meal> {
     return meal;
   }
 
-  async deleteMeal(id: string): Promise<void> {
-    const { affected } = await this.delete({ id });
-    if (!affected) {
-      throw new NotFoundException(`Meal with id ${id} not found`);
-    }
+  async deleteMeal(id: string): Promise<Meal> {
+    const meal = await this.getMeal(id);
+    await this.delete({ id });
+    return meal;
   }
 }

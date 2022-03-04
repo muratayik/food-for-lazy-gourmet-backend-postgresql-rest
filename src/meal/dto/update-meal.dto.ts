@@ -1,4 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
+import { Ingredient } from 'src/ingredient/ingredient.entity';
 
 export class UpdateMealDto {
   @IsNotEmpty()
@@ -16,4 +17,7 @@ export class UpdateMealDto {
 
   @IsNotEmpty()
   instructions: string[];
+
+  @IsNotEmpty()
+  ingredients: Ingredient[];
 }

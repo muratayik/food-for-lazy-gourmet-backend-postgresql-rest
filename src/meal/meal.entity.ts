@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Ingredient } from 'src/ingredient/ingredient.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Meal {
@@ -19,4 +20,10 @@ export class Meal {
 
   @Column('text', { array: true })
   instructions: string[];
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  @OneToMany((_) => Ingredient, (ingredient) => ingredient.meal, {
+    eager: true,
+  })
+  ingredients: Ingredient[];
 }

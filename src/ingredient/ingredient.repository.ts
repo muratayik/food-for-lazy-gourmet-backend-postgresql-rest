@@ -2,6 +2,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import { Meal } from 'src/meal/meal.entity';
 import { TYPEORM_ERROR_MESSAGES } from 'src/utils/constants';
 import { EntityRepository, Repository } from 'typeorm';
 import { CreateIngredientDto } from './dto/create-ingredient.dto';
@@ -12,10 +13,6 @@ import { Ingredient } from './ingredient.entity';
 export class IngredientRepository extends Repository<Ingredient> {
   async getIngredients(): Promise<Ingredient[]> {
     return await this.find();
-  }
-
-  async getIngredientByMealId(mealId: string): Promise<Ingredient[]> {
-    return await this.find({ mealId });
   }
 
   async getIngredient(id: string): Promise<Ingredient> {
@@ -38,13 +35,14 @@ export class IngredientRepository extends Repository<Ingredient> {
 
   async createIngredient(
     createIngredientDto: CreateIngredientDto,
+    meal: Meal,
   ): Promise<Ingredient> {
-    const { name, amount, mealId } = createIngredientDto;
+    const { name, amount } = createIngredientDto;
 
     const ingredient = this.create({
       name,
       amount,
-      mealId,
+      meal,
     });
 
     try {
@@ -77,5 +75,10 @@ export class IngredientRepository extends Repository<Ingredient> {
     if (!affected) {
       throw new NotFoundException(`Ingredient with id ${id} not found`);
     }
+  }
+
+  async deleteIngredientsOfAMeal(meal: Meal): Promise<number> {
+    const { affected } = await this.delete({ meal });
+    return affected;
   }
 }

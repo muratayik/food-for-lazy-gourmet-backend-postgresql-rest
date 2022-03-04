@@ -26,20 +26,6 @@ export class IngredientController {
     return this.ingredientService.getIngredient(id);
   }
 
-  @Get('/getByMealId/:mealId')
-  getIngredientByMealId(
-    @Param('mealId') mealId: string,
-  ): Promise<Ingredient[]> {
-    return this.ingredientService.getIngredientByMealId(mealId);
-  }
-
-  @Post()
-  createIngredient(
-    @Body() createIngredientDto: CreateIngredientDto,
-  ): Promise<Ingredient> {
-    return this.ingredientService.createIngredient(createIngredientDto);
-  }
-
   @Patch()
   updateIngredient(
     @Body() updateIngredientDto: UpdateIngredientDto,
