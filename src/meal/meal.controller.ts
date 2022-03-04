@@ -1,14 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common';
-import { CreateMealDto } from './dto/create-meal.dto';
-import { UpdateMealDto } from './dto/update-meal.dto';
+import { Controller, Get, Param } from '@nestjs/common';
 import { Meal } from './meal.entity';
 import { MealService } from './meal.service';
 
@@ -24,27 +14,5 @@ export class MealController {
   @Get('/:id')
   getMeal(@Param('id') id: string): Promise<Meal> {
     return this.mealService.getMeal(id);
-  }
-
-  @Get('/:categoryId/meals')
-  getMealsByCategoryId(
-    @Param('categoryId') categoryId: string,
-  ): Promise<Meal[]> {
-    return this.mealService.getMealsByCategoryId(categoryId);
-  }
-
-  @Post()
-  createMeal(@Body() createMealDto: CreateMealDto): Promise<Meal> {
-    return this.mealService.createMeal(createMealDto);
-  }
-
-  @Patch()
-  updateMeal(@Body() updateMealDto: UpdateMealDto): Promise<Meal> {
-    return this.mealService.updateMeal(updateMealDto);
-  }
-
-  @Delete('/:id')
-  deleteMeal(@Param('id') id: string): Promise<void> {
-    return this.mealService.deleteMeal(id);
   }
 }

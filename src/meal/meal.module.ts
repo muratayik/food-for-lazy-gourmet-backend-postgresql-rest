@@ -9,5 +9,6 @@ import { MealService } from './meal.service';
   imports: [TypeOrmModule.forFeature([MealRepository]), IngredientModule],
   controllers: [MealController],
   providers: [MealService],
+  exports: [MealService],
 })
 export class MealModule {}

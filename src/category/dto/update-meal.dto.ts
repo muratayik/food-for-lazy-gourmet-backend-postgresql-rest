@@ -1,9 +1,9 @@
 import { IsNotEmpty } from 'class-validator';
 import { Ingredient } from 'src/ingredient/ingredient.entity';
 
-export class CreateMealDto {
+export class UpdateMealDto {
   @IsNotEmpty()
-  categoryId: string;
+  id: string;
 
   @IsNotEmpty()
   name: string;

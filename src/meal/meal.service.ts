@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CreateMealDto } from 'src/category/dto/create-meal.dto';
 import { CreateIngredientDto } from 'src/ingredient/dto/create-ingredient.dto';
 import { Ingredient } from 'src/ingredient/ingredient.entity';
 import { IngredientService } from 'src/ingredient/ingredient.service';
-import { CreateMealDto } from './dto/create-meal.dto';
-import { UpdateMealDto } from './dto/update-meal.dto';
+import { UpdateMealDto } from '../category/dto/update-meal.dto';
 import { Meal } from './meal.entity';
 import { MealRepository } from './meal.repository';
 
@@ -28,17 +28,30 @@ export class MealService {
     return this.mealRepository.getMealsByCategoryId(categoryId);
   }
 
-  async createMeal(createMealDto: CreateMealDto): Promise<Meal> {
-    const meal = await this.mealRepository.createMeal(createMealDto);
+  async createMeal(
+    createMealDto: CreateMealDto,
+    categoryId: string,
+  ): Promise<Meal> {
+    const meal = await this.mealRepository.createMeal(
+      createMealDto,
+      categoryId,
+    );
     await this.createIngredientsForMeal(meal, createMealDto.ingredients);
 
     return meal;
   }
 
-  async updateMeal(updateMealDto: UpdateMealDto): Promise<Meal> {
-    const meal = await this.mealRepository.updateMeal(updateMealDto);
+  async updateMeal(
+    updateMealDto: UpdateMealDto,
+    categoryId: string,
+  ): Promise<Meal> {
+    const meal = await this.mealRepository.updateMeal(
+      updateMealDto,
+      categoryId,
+    );
     await this.ingredientService.deleteIngredientsOfAMeal(meal);
     await this.createIngredientsForMeal(meal, updateMealDto.ingredients);
+    meal.ingredients = updateMealDto.ingredients;
     return meal;
   }
 
@@ -46,6 +59,13 @@ export class MealService {
     const meal = await this.getMeal(id);
     await this.ingredientService.deleteIngredientsOfAMeal(meal);
     await this.mealRepository.deleteMeal(id);
+  }
+
+  async doesCategoryContainsMeal(categoryId: string): Promise<boolean> {
+    const numberOfMealsInCategory = await this.mealRepository.count({
+      categoryId,
+    });
+    return numberOfMealsInCategory > 0;
   }
 
   async createIngredientsForMeal(
