@@ -8,6 +8,7 @@ import { configValidationSchema } from './config.schema';
 import { AdminCheckMiddleware } from './auth/admin-check.middleware';
 import { CategoryController } from './category/category.controller';
 import { IngredientModule } from './ingredient/ingredient.module';
+import { MealModule } from './meal/meal.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { IngredientModule } from './ingredient/ingredient.module';
     CategoryModule,
     HttpModule,
     IngredientModule,
+    MealModule,
   ],
   controllers: [],
   providers: [],
