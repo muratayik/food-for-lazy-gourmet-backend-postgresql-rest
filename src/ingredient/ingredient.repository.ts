@@ -5,8 +5,8 @@ import {
 import { Meal } from 'src/meal/meal.entity';
 import { TYPEORM_ERROR_MESSAGES } from 'src/utils/constants';
 import { EntityRepository, Repository } from 'typeorm';
-import { CreateIngredientDto } from './dto/create-ingredient.dto';
-import { UpdateIngredientDto } from './dto/update-ingredient.dto';
+import { CreateIngredientDto } from '../dto/create-ingredient.dto';
+import { UpdateIngredientDto } from '../dto/update-ingredient.dto';
 import { Ingredient } from './ingredient.entity';
 
 @EntityRepository(Ingredient)

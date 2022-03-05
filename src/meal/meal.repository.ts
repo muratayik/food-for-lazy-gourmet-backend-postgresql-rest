@@ -2,10 +2,10 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateMealDto } from 'src/category/dto/create-meal.dto';
+import { CreateMealDto } from '../dto/create-meal.dto';
 import { TYPEORM_ERROR_MESSAGES } from 'src/utils/constants';
 import { EntityRepository, Repository } from 'typeorm';
-import { UpdateMealDto } from '../category/dto/update-meal.dto';
+import { UpdateMealDto } from '../dto/update-meal.dto';
 import { Meal } from './meal.entity';
 
 @EntityRepository(Meal)
@@ -14,11 +14,11 @@ export class MealRepository extends Repository<Meal> {
     return await this.find();
   }
 
-  async getMeal(id: string): Promise<Meal> {
+  async getMeal(categoryId: string, mealId: string): Promise<Meal> {
     try {
-      const meal = await this.findOne({ id });
+      const meal = await this.findOne({ id: mealId, categoryId });
       if (!meal) {
-        throw new NotFoundException(`Meal with id ${id} can not be found`);
+        throw new NotFoundException(`Meal with id ${mealId} can not be found`);
       }
 
       return meal;
@@ -65,7 +65,7 @@ export class MealRepository extends Repository<Meal> {
   ): Promise<Meal> {
     const { id, name, imageUrl, videoUrl, instructions } = updateMealDto;
 
-    const meal = await this.getMeal(id);
+    const meal = await this.getMeal(categoryId, id);
     meal.categoryId = categoryId;
     meal.name = name;
     meal.imageUrl = imageUrl;
@@ -76,8 +76,8 @@ export class MealRepository extends Repository<Meal> {
     return meal;
   }
 
-  async deleteMeal(id: string): Promise<Meal> {
-    const meal = await this.getMeal(id);
+  async deleteMeal(categoryId: string, id: string): Promise<Meal> {
+    const meal = await this.getMeal(categoryId, id);
     await this.delete({ id });
     return meal;
   }

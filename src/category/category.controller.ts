@@ -10,10 +10,10 @@ import {
 import { Meal } from 'src/meal/meal.entity';
 import { Category } from './category.entity';
 import { CategoryService } from './category.service';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { CreateMealDto } from './dto/create-meal.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
-import { UpdateMealDto } from './dto/update-meal.dto';
+import { CreateCategoryDto } from '../dto/create-category.dto';
+import { CreateMealDto } from '../dto/create-meal.dto';
+import { UpdateCategoryDto } from '../dto/update-category.dto';
+import { UpdateMealDto } from '../dto/update-meal.dto';
 
 @Controller('category')
 export class CategoryController {

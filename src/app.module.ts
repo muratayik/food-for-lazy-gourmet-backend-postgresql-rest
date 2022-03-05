@@ -9,6 +9,7 @@ import { AdminCheckMiddleware } from './auth/admin-check.middleware';
 import { CategoryController } from './category/category.controller';
 import { IngredientModule } from './ingredient/ingredient.module';
 import { MealModule } from './meal/meal.module';
+import { UserMealModule } from './user-meal/user-meal.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { MealModule } from './meal/meal.module';
     HttpModule,
     IngredientModule,
     MealModule,
+    UserMealModule,
   ],
   controllers: [],
   providers: [],
@@ -55,6 +57,7 @@ export class AppModule {
       .exclude(
         { path: '/category', method: RequestMethod.GET },
         { path: '/category/:id', method: RequestMethod.GET },
+        { path: '/user-meal', method: RequestMethod.ALL },
       )
       .forRoutes(CategoryController);
   }

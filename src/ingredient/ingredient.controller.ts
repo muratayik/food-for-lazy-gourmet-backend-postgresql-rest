@@ -1,4 +1,12 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
+import { IngredientService } from './ingredient.service';
 
 @Controller('ingredient')
-export class IngredientController {}
+export class IngredientController {
+  constructor(private ingredientService: IngredientService) {}
+
+  @Get()
+  getIngredients() {
+    return this.ingredientService.getIngredients();
+  }
+}

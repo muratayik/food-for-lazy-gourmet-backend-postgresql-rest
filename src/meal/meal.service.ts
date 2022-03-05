@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateMealDto } from 'src/category/dto/create-meal.dto';
-import { CreateIngredientDto } from 'src/ingredient/dto/create-ingredient.dto';
+import { CreateMealDto } from '../dto/create-meal.dto';
+import { CreateIngredientDto } from 'src/dto/create-ingredient.dto';
 import { Ingredient } from 'src/ingredient/ingredient.entity';
 import { IngredientService } from 'src/ingredient/ingredient.service';
-import { UpdateMealDto } from '../category/dto/update-meal.dto';
+import { UpdateMealDto } from '../dto/update-meal.dto';
 import { Meal } from './meal.entity';
 import { MealRepository } from './meal.repository';
 
@@ -20,8 +20,8 @@ export class MealService {
     return this.mealRepository.getMeals();
   }
 
-  getMeal(id: string): Promise<Meal> {
-    return this.mealRepository.getMeal(id);
+  getMeal(categoryId: string, mealId: string): Promise<Meal> {
+    return this.mealRepository.getMeal(categoryId, mealId);
   }
 
   getMealsByCategoryId(categoryId: string): Promise<Meal[]> {
@@ -55,17 +55,23 @@ export class MealService {
     return meal;
   }
 
-  async deleteMeal(id: string): Promise<void> {
-    const meal = await this.getMeal(id);
+  async deleteMeal(categoryId: string, mealId: string): Promise<void> {
+    const meal = await this.getMeal(categoryId, mealId);
     await this.ingredientService.deleteIngredientsOfAMeal(meal);
-    await this.mealRepository.deleteMeal(id);
+    await this.mealRepository.deleteMeal(categoryId, mealId);
   }
 
   async doesCategoryContainsMeal(categoryId: string): Promise<boolean> {
-    const numberOfMealsInCategory = await this.mealRepository.count({
+    const numberOfMealsInCategory = await this.findNumberOfMealsInCategory(
+      categoryId,
+    );
+    return numberOfMealsInCategory > 0;
+  }
+
+  async findNumberOfMealsInCategory(categoryId: string): Promise<number> {
+    return await this.mealRepository.count({
       categoryId,
     });
-    return numberOfMealsInCategory > 0;
   }
 
   async createIngredientsForMeal(

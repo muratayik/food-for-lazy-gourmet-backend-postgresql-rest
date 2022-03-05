@@ -5,8 +5,8 @@ import {
 import { TYPEORM_ERROR_MESSAGES } from 'src/utils/constants';
 import { EntityRepository, Repository } from 'typeorm';
 import { Category } from './category.entity';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
+import { CreateCategoryDto } from '../dto/create-category.dto';
+import { UpdateCategoryDto } from '../dto/update-category.dto';
 
 @EntityRepository(Category)
 export class CategoryRepository extends Repository<Category> {

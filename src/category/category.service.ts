@@ -4,10 +4,10 @@ import { Meal } from 'src/meal/meal.entity';
 import { MealService } from 'src/meal/meal.service';
 import { Category } from './category.entity';
 import { CategoryRepository } from './category.repository';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { CreateMealDto } from './dto/create-meal.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
-import { UpdateMealDto } from './dto/update-meal.dto';
+import { CreateCategoryDto } from '../dto/create-category.dto';
+import { CreateMealDto } from '../dto/create-meal.dto';
+import { UpdateCategoryDto } from '../dto/update-category.dto';
+import { UpdateMealDto } from '../dto/update-meal.dto';
 
 @Injectable()
 export class CategoryService {
@@ -66,6 +66,6 @@ export class CategoryService {
 
   async deleteMeal(categoryId: string, mealId: string): Promise<void> {
     await this.getCategoryById(categoryId);
-    return await this.mealService.deleteMeal(mealId);
+    return await this.mealService.deleteMeal(categoryId, mealId);
   }
 }

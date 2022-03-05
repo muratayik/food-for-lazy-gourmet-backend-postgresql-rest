@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Meal } from 'src/meal/meal.entity';
-import { CreateIngredientDto } from './dto/create-ingredient.dto';
-import { UpdateIngredientDto } from './dto/update-ingredient.dto';
+import { CreateIngredientDto } from '../dto/create-ingredient.dto';
+import { UpdateIngredientDto } from '../dto/update-ingredient.dto';
 import { Ingredient } from './ingredient.entity';
 import { IngredientRepository } from './ingredient.repository';
 
