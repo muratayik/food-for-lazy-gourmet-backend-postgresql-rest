@@ -1,4 +1,5 @@
 import {
+  HttpStatus,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
@@ -14,17 +15,20 @@ export class MealRepository extends Repository<Meal> {
     return await this.find();
   }
 
-  async getMeal(categoryId: string, mealId: string): Promise<Meal> {
+  async getMeal(mealId: string): Promise<Meal> {
     try {
-      const meal = await this.findOne({ id: mealId, categoryId });
+      const meal = await this.findOne({ id: mealId });
       if (!meal) {
         throw new NotFoundException(`Meal with id ${mealId} can not be found`);
       }
 
       return meal;
     } catch (error) {
-      if (error.code === TYPEORM_ERROR_MESSAGES.UUID_COULD_NOT_BE_CONVERTED) {
-        throw new NotFoundException();
+      if (
+        error.code === TYPEORM_ERROR_MESSAGES.UUID_COULD_NOT_BE_CONVERTED ||
+        error.response.statusCode === HttpStatus.NOT_FOUND
+      ) {
+        throw new NotFoundException(`Meal with id ${mealId} can not be found`);
       }
 
       throw new InternalServerErrorException(error.message);
@@ -35,11 +39,8 @@ export class MealRepository extends Repository<Meal> {
     return await this.find({ categoryId });
   }
 
-  async createMeal(
-    createMealDto: CreateMealDto,
-    categoryId: string,
-  ): Promise<Meal> {
-    const { name, imageUrl, videoUrl, instructions, ingredients } =
+  async createMeal(createMealDto: CreateMealDto): Promise<Meal> {
+    const { categoryId, name, imageUrl, videoUrl, instructions, ingredients } =
       createMealDto;
 
     const meal = this.create({
@@ -59,13 +60,11 @@ export class MealRepository extends Repository<Meal> {
     }
   }
 
-  async updateMeal(
-    updateMealDto: UpdateMealDto,
-    categoryId: string,
-  ): Promise<Meal> {
-    const { id, name, imageUrl, videoUrl, instructions } = updateMealDto;
+  async updateMeal(updateMealDto: UpdateMealDto): Promise<Meal> {
+    const { id, categoryId, name, imageUrl, videoUrl, instructions } =
+      updateMealDto;
 
-    const meal = await this.getMeal(categoryId, id);
+    const meal = await this.getMeal(id);
     meal.categoryId = categoryId;
     meal.name = name;
     meal.imageUrl = imageUrl;
@@ -76,8 +75,8 @@ export class MealRepository extends Repository<Meal> {
     return meal;
   }
 
-  async deleteMeal(categoryId: string, id: string): Promise<Meal> {
-    const meal = await this.getMeal(categoryId, id);
+  async deleteMeal(id: string): Promise<Meal> {
+    const meal = await this.getMeal(id);
     await this.delete({ id });
     return meal;
   }

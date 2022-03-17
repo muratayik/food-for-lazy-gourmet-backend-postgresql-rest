@@ -13,6 +13,9 @@ export class UpdateMealDto {
   videoUrl: string;
 
   @IsNotEmpty()
+  categoryId: string;
+
+  @IsNotEmpty()
   instructions: string[];
 
   @IsNotEmpty()

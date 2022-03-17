@@ -9,7 +9,9 @@ import { AdminCheckMiddleware } from './auth/admin-check.middleware';
 import { CategoryController } from './category/category.controller';
 import { IngredientModule } from './ingredient/ingredient.module';
 import { MealModule } from './meal/meal.module';
-import { UserMealModule } from './user-meal/user-meal.module';
+import { FavouriteModule } from './favourite/favourite.module';
+import { FavouriteController } from './favourite/favourite.controller';
+import { MealController } from './meal/meal.controller';
 
 @Module({
   imports: [
@@ -43,22 +45,47 @@ import { UserMealModule } from './user-meal/user-meal.module';
     HttpModule,
     IngredientModule,
     MealModule,
-    UserMealModule,
+    FavouriteModule,
   ],
   controllers: [],
   providers: [],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthMiddleware).forRoutes('*');
+    consumer.apply(AuthMiddleware).forRoutes(FavouriteController);
+
+    consumer
+      .apply(AuthMiddleware)
+      .exclude(
+        { path: '/category', method: RequestMethod.GET },
+        { path: '/category/:id', method: RequestMethod.GET },
+      )
+      .forRoutes(CategoryController);
 
     consumer
       .apply(AdminCheckMiddleware)
       .exclude(
         { path: '/category', method: RequestMethod.GET },
         { path: '/category/:id', method: RequestMethod.GET },
-        { path: '/user-meal', method: RequestMethod.ALL },
       )
       .forRoutes(CategoryController);
+
+    consumer
+      .apply(AuthMiddleware)
+      .exclude(
+        { path: '/meal', method: RequestMethod.GET },
+        { path: '/meal/:id', method: RequestMethod.GET },
+        { path: '/meal/byCategoryId/:categoryId', method: RequestMethod.GET },
+      )
+      .forRoutes(MealController);
+
+    consumer
+      .apply(AdminCheckMiddleware)
+      .exclude(
+        { path: '/meal', method: RequestMethod.GET },
+        { path: '/meal/:id', method: RequestMethod.GET },
+        { path: '/meal/byCategoryId/:categoryId', method: RequestMethod.GET },
+      )
+      .forRoutes(MealController);
   }
 }

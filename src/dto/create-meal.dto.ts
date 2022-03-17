@@ -10,6 +10,9 @@ export class CreateMealDto {
   videoUrl: string;
 
   @IsNotEmpty()
+  categoryId: string;
+
+  @IsNotEmpty()
   instructions: string[];
 
   @IsNotEmpty()

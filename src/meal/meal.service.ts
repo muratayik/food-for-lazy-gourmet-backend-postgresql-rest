@@ -7,6 +7,7 @@ import { IngredientService } from 'src/ingredient/ingredient.service';
 import { UpdateMealDto } from '../dto/update-meal.dto';
 import { Meal } from './meal.entity';
 import { MealRepository } from './meal.repository';
+import { CategoryService } from 'src/category/category.service';
 
 @Injectable()
 export class MealService {
@@ -14,64 +15,45 @@ export class MealService {
     @InjectRepository(MealRepository)
     private mealRepository: MealRepository,
     private ingredientService: IngredientService,
+    private categoryService: CategoryService,
   ) {}
 
   getMeals(): Promise<Meal[]> {
     return this.mealRepository.getMeals();
   }
 
-  getMeal(categoryId: string, mealId: string): Promise<Meal> {
-    return this.mealRepository.getMeal(categoryId, mealId);
+  getMeal(mealId: string): Promise<Meal> {
+    return this.mealRepository.getMeal(mealId);
   }
 
-  getMealsByCategoryId(categoryId: string): Promise<Meal[]> {
+  async getMealsByCategoryId(categoryId: string): Promise<Meal[]> {
+    await this.categoryService.getCategoryById(categoryId);
     return this.mealRepository.getMealsByCategoryId(categoryId);
   }
 
-  async createMeal(
-    createMealDto: CreateMealDto,
-    categoryId: string,
-  ): Promise<Meal> {
-    const meal = await this.mealRepository.createMeal(
-      createMealDto,
-      categoryId,
-    );
+  async createMeal(createMealDto: CreateMealDto): Promise<Meal> {
+    const { categoryId } = createMealDto;
+    await this.categoryService.getCategoryById(categoryId);
+    const meal = await this.mealRepository.createMeal(createMealDto);
     await this.createIngredientsForMeal(meal, createMealDto.ingredients);
 
     return meal;
   }
 
-  async updateMeal(
-    updateMealDto: UpdateMealDto,
-    categoryId: string,
-  ): Promise<Meal> {
-    const meal = await this.mealRepository.updateMeal(
-      updateMealDto,
-      categoryId,
-    );
+  async updateMeal(updateMealDto: UpdateMealDto): Promise<Meal> {
+    const { categoryId } = updateMealDto;
+    await this.categoryService.getCategoryById(categoryId);
+    const meal = await this.mealRepository.updateMeal(updateMealDto);
     await this.ingredientService.deleteIngredientsOfAMeal(meal);
     await this.createIngredientsForMeal(meal, updateMealDto.ingredients);
     meal.ingredients = updateMealDto.ingredients;
     return meal;
   }
 
-  async deleteMeal(categoryId: string, mealId: string): Promise<void> {
-    const meal = await this.getMeal(categoryId, mealId);
+  async deleteMeal(mealId: string): Promise<void> {
+    const meal = await this.getMeal(mealId);
     await this.ingredientService.deleteIngredientsOfAMeal(meal);
-    await this.mealRepository.deleteMeal(categoryId, mealId);
-  }
-
-  async doesCategoryContainsMeal(categoryId: string): Promise<boolean> {
-    const numberOfMealsInCategory = await this.findNumberOfMealsInCategory(
-      categoryId,
-    );
-    return numberOfMealsInCategory > 0;
-  }
-
-  async findNumberOfMealsInCategory(categoryId: string): Promise<number> {
-    return await this.mealRepository.count({
-      categoryId,
-    });
+    await this.mealRepository.deleteMeal(mealId);
   }
 
   async createIngredientsForMeal(

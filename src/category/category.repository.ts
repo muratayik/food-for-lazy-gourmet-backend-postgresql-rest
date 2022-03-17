@@ -25,8 +25,10 @@ export class CategoryRepository extends Repository<Category> {
       return category;
     } catch (error) {
       if (error.code === TYPEORM_ERROR_MESSAGES.UUID_COULD_NOT_BE_CONVERTED) {
-        throw new NotFoundException();
+        throw new NotFoundException(`Category with id "${id}" not found`);
       }
+
+      throw error;
     }
   }
 
