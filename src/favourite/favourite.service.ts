@@ -49,7 +49,6 @@ export class FavouriteService {
       await this.favouriteRepository.save(favourite);
       return favourite;
     } catch (error) {
-      console.log(error);
       throw new InternalServerErrorException(error.message);
     }
   }
